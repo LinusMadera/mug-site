@@ -1,5 +1,5 @@
 // Caches the app shell. Music is only stored when you download it, and covers of downloads stay available offline.
-const CACHE = 'mug-shell-v2';
+const CACHE = 'egg-mug-shell-v3';
 const OFFLINE = 'mug-offline-v1';
 
 self.addEventListener('install', () => self.skipWaiting());

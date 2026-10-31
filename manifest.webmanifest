@@ -1,6 +1,6 @@
 {
-  "name": "MUG",
-  "short_name": "MUG",
+  "name": "Egg Mug",
+  "short_name": "Egg Mug",
   "display": "standalone",
   "start_url": "./",
   "scope": "./",
