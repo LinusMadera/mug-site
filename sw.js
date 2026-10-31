@@ -1,15 +1,36 @@
-// Caches the app shell. Music is only stored when you download it, and covers of downloads stay available offline.
-const CACHE = 'egg-mug-shell-v3';
+// Caches the app shell and covers. Music is only stored when you download it.
+const CACHE = 'egg-mug-shell-v4';
+const COVERS = 'egg-mug-covers-v1';
+const MAX_COVERS = 400;
 const OFFLINE = 'mug-offline-v1';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys()
-      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== OFFLINE).map((k) => caches.delete(k))))
+      .then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== OFFLINE && k !== COVERS).map((k) => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
+
+// A cover seen once shows instantly from then on, and is refreshed quietly behind it.
+async function cover(url) {
+  const box = await caches.open(COVERS);
+  const hit = await box.match(url.href);
+  const fresh = fetch(url.href, { mode: 'cors' }).then(async (res) => {
+    if (res.ok) {
+      await box.put(url.href, res.clone());
+      const keys = await box.keys();
+      for (const old of keys.slice(0, Math.max(0, keys.length - MAX_COVERS))) await box.delete(old);
+    }
+    return res;
+  });
+  if (hit) {
+    fresh.catch(() => undefined);
+    return hit;
+  }
+  return fresh.catch(async () => (await (await caches.open(OFFLINE)).match(url.origin + url.pathname)) || Response.error());
+}
 
 self.addEventListener('fetch', (e) => {
   const url = new URL(e.request.url);
@@ -17,10 +38,7 @@ self.addEventListener('fetch', (e) => {
 
   if (url.origin !== location.origin) {
     if (/\/Items\/[^/]+\/Images\//.test(url.pathname)) {
-      e.respondWith(fetch(e.request).catch(async () => {
-        const hit = await (await caches.open(OFFLINE)).match(url.origin + url.pathname);
-        return hit || Response.error();
-      }));
+      e.respondWith(cover(url));
     }
     return;
   }
