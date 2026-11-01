@@ -1,6 +1,12 @@
 {
+  "id": "./",
   "name": "Egg Mug",
   "short_name": "Egg Mug",
+  "description": "Egg Mug, a music player for your Jellyfin server.",
+  "categories": [
+    "music",
+    "entertainment"
+  ],
   "display": "fullscreen",
   "display_override": [
     "fullscreen",
@@ -20,6 +26,12 @@
       "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "icon.svg",
