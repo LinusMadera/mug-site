@@ -1,5 +1,5 @@
 // Caches the app shell and covers. Music is only stored when you download it.
-const CACHE = 'egg-mug-shell-v5';
+const CACHE = 'egg-mug-shell-v6';
 const COVERS = 'egg-mug-covers-v1';
 const MAX_COVERS = 400;
 const OFFLINE = 'mug-offline-v1';
